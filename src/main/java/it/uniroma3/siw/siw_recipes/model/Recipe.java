@@ -1,0 +1,140 @@
+package it.uniroma3.siw.siw_recipes.model;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+
+import it.uniroma3.siw.siw_recipes.model.ingredients.IngredientInRecipe;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+
+@Entity
+public class Recipe {
+	
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	private Long id;
+	private String title;
+	private String description;
+	@OneToMany(
+		    mappedBy = "recipe",
+		    cascade = CascadeType.ALL,
+		    orphanRemoval = true
+		)
+	private List<IngredientInRecipe> ingredients = new ArrayList<>();
+	private int preparationTime;
+    @Enumerated(EnumType.STRING)
+	private Difficulty difficulty;
+    @ManyToOne
+    @JoinColumn(name = "caregory_id")
+	private Category category;
+	private LocalDateTime createdAt;
+	/*
+	 * @ManyToOne private User author;
+	 */
+	
+	public Recipe() {}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public List<IngredientInRecipe> getIngredients() {
+		return ingredients;
+	}
+
+	public void setIngredients(List<IngredientInRecipe> ingredients) {
+		this.ingredients = ingredients;
+	}
+
+	public int getPreparationTime() {
+		return preparationTime;
+	}
+
+	public void setPreparationTime(int preparationTime) {
+		this.preparationTime = preparationTime;
+	}
+
+	public Difficulty getDifficulty() {
+		return difficulty;
+	}
+
+	public void setDifficulty(Difficulty difficulty) {
+		this.difficulty = difficulty;
+	}
+
+	public LocalDateTime getCreatedAt() {
+		return createdAt;
+	}
+
+	public void setCreatedAt(LocalDateTime createdAt) {
+		this.createdAt = createdAt;
+	}
+
+	/*
+	 * public User getAuthor() { return author; }
+	 * 
+	 * public void setAuthor(User author) { this.author = author; }
+	 */
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(createdAt, description, difficulty, ingredients, preparationTime, title);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Recipe other = (Recipe) obj;
+		return  Objects.equals(createdAt, other.createdAt)
+				&& Objects.equals(description, other.description) && difficulty == other.difficulty
+				&& Objects.equals(ingredients, other.ingredients) && preparationTime == other.preparationTime
+				&& Objects.equals(title, other.title);
+	}
+
+	public Category getCategory() {
+		return category;
+	}
+
+	public void setCategory(Category category) {
+		this.category = category;
+	}
+}
+/*
+ * @PrePersist public void onCreate() { this.createdAt = LocalDateTime.now(); }
+ * }
+ */

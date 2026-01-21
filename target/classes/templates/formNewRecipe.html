@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="it"
+      xmlns:th="http://www.thymeleaf.org">
+	<head>
+	    <meta charset="UTF-8">
+	    <title>Nuova Ricetta</title>
+	</head>
+	<body>
+		<h1>Crea nuova ricetta</h1>
+		<main>
+			<section>
+				<form th:action="@{/recipes/new}" th:object="${newRecipe}" method="post">
+
+				    <input type="text" th:field="*{title}" placeholder="Titolo"/>
+
+				    <textarea th:field="*{description}"></textarea>
+
+				    <select th:field="*{difficulty}">
+				        <option th:each="d : ${difficulties}"
+				                th:value="${d}"
+				                th:text="${d}">
+				        </option>
+				    </select>
+
+				    <select th:field="*{categoryId}">
+				        <option th:each="c : ${categories}"
+				                th:value="${c.id}"
+				                th:text="${c.name}">
+				        </option>
+				    </select>
+
+				    <div th:each="i, stat : *{ingredients}">
+				        <select th:field="*{ingredients[__${stat.index}__].ingredientId}">
+				            <option th:each="ing : ${allIngredients}"
+				                    th:value="${ing.id}"
+				                    th:text="${ing.name}">
+				            </option>
+				        </select>
+
+				        <input type="number"
+				               th:field="*{ingredients[__${stat.index}__].quantity}" />
+
+				        <select th:field="*{ingredients[__${stat.index}__].unit}">
+				            <option th:each="u : ${units}"
+				                    th:value="${u}"
+				                    th:text="${u}">
+				            </option>
+				        </select>
+				    </div>
+
+				    <button type="submit">Salva</button>
+				</form>
+
+			</section>
+		</main>
+	
+	
+	</body>
+</html>
