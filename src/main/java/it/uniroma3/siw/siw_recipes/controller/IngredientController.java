@@ -35,7 +35,7 @@ public class IngredientController {
 	@PostMapping("/ingredients/newIngredient")
 	public String newIngredient(@ModelAttribute Ingredient newIngredient) {
 		is.saveIngredient(newIngredient);
-		return "redirect:/ingredients/ingredientSuccess";
+		return "redirect:/recipes/new";
 	}
 	
 	@GetMapping("/ingredients/ingredientSuccess")

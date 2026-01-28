@@ -41,26 +41,41 @@ public class RecipeController {
 	
 	@GetMapping("/recipes/new")
 	public String newRecipe(Model model) {
-	    
-		RecipeDTO newRecipe = new RecipeDTO();
-	 // aggiungi 3 ingredienti “vuoti” nella lista
-	    for (int j = 0; j < 3; j++) {
-	        newRecipe.getIngredients().add(new IngredientDTO());
-	    }
+
+	    RecipeDTO newRecipe = new RecipeDTO();
+
 	    model.addAttribute("newRecipe", newRecipe);
 	    model.addAttribute("allIngredients", is.getAllIngredients());
 	    model.addAttribute("units", Unit.values());
 	    model.addAttribute("difficulties", Difficulty.values());
 	    model.addAttribute("categories", cs.getAllCategories());
+
 	    return "formNewRecipe";
 	}
 
 
 	
 	@PostMapping("/recipes/new")
-	public String saveRecipe(
-	        @ModelAttribute("recipeForm") RecipeDTO newRecipe) {
+	public String handleRecipe(
+	        @ModelAttribute RecipeDTO newRecipe,
+	        @RequestParam(required = false) String addIngredient,
+	        Model model
+	) {
 
+	    // 👉 CASO 1: aggiungo ingrediente
+	    if (addIngredient != null) {
+	        newRecipe.getIngredients().add(new IngredientDTO());
+
+	        model.addAttribute("newRecipe", newRecipe);
+	        model.addAttribute("allIngredients", is.getAllIngredients());
+	        model.addAttribute("units", Unit.values());
+	        model.addAttribute("difficulties", Difficulty.values());
+	        model.addAttribute("categories", cs.getAllCategories());
+
+	        return "formNewRecipe";
+	    }
+
+	    // 👉 CASO 2: salvo davvero
 	    Recipe recipe = new Recipe();
 	    recipe.setTitle(newRecipe.getTitle());
 	    recipe.setDescription(newRecipe.getDescription());
@@ -74,17 +89,18 @@ public class RecipeController {
 	            is.getIngredientById(ingDto.getIngredientId());
 
 	        IngredientInRecipe iir = new IngredientInRecipe();
-	        iir.setRecipe(recipe);          // collega
+	        iir.setRecipe(recipe);
 	        iir.setIngredient(ingredient);
 	        iir.setQuantity(ingDto.getQuantity());
 	        iir.setUnit(ingDto.getUnit());
 
-	        recipe.getIngredients().add(iir); // 👈 SOLO questo
+	        recipe.getIngredients().add(iir);
 	    }
 
-	    rs.saveRecipe(recipe); // 👈 UNA SOLA SAVE
+	    rs.saveRecipe(recipe);
 	    return "redirect:/recipes/allRecipes";
 	}
+
 
 
 	
